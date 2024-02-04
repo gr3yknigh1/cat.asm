@@ -12,4 +12,5 @@ indent_size = 4
 
 [{Makefile,*.asm}]
 indent_style = tab
+indent_size = 8
 

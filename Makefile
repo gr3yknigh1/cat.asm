@@ -8,7 +8,7 @@ CAT_SRC := $(SRCTREE)/cat.asm
 
 
 ASM      := nasm
-ASMFLAGS := -f elf64
+ASMFLAGS := -f elf64 -gdwarf
 
 LD       := ld
 LDFLAGS  :=
