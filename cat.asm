@@ -20,7 +20,8 @@
 %define O_WRONLY		1
 %define O_RDWR			2
 
-%define STRUCT_STAT_SIZE	144
+%define STAT_STRUCT_SIZE	144
+%define STAT_ST_SIZE_OFFSET	48
 
 %define ARGC_OFFSET		0
 %define ARGV_EXEC_OFFSET	8
@@ -36,7 +37,8 @@ _start:
 	mov	rsi, structstat
 	syscall
 
-	mov	r10, [rax + 48]
+	; STORE SIZE OF FILE FROM STRUCT STAT
+	mov	r10, [rsp + STAT_ST_SIZE_OFFSET]
 
 	; OPEN FIRST ARGUMENT
 	mov	rax, SYSCALL_OPEN 
@@ -46,11 +48,10 @@ _start:
 	syscall
 
 	; CALL SENDFILE FROM OPENED FD TO STDOUT
-	mov	rsi, rax
-	mov	rax, SYSCALL_SENDFILE64
-	mov	rdi, FD_STDOUT
-	mov	rdx, 0
-	; mov	r10, 256
+	mov	rsi, rax				; IN_FD
+	mov	rax, SYSCALL_SENDFILE64			; SYSCALL
+	mov	rdi, FD_STDOUT				; OUT_FD
+	mov	rdx, 0					; OFFSET
 	syscall
 
 	mov	rax, SYSCALL_EXIT
@@ -59,6 +60,6 @@ _start:
 
 	segment .bss
 structstat:
-	resb	STRUCT_STAT_SIZE
+	resb	STAT_STRUCT_SIZE
 
 ; vim: set filetype=asm :
